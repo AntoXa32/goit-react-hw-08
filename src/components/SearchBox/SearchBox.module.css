@@ -1,0 +1,10 @@
+.container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.input {
+    width: 300px;
+    border-radius: 3px;
+    border: solid rgb(13, 13, 191);
+}

@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    border: 2px solid rgb(90, 20, 201);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    justify-content: space-between;
+    padding: 10px;
+    width: 300px;
+    align-items: center;
+    background: rgba(29, 9, 17, 0.186);
+}
+
+.btn {
+    height: 30px;
+    background: rgb(111, 38, 44);
+    border-radius: 5px;
+}
+
+.icon {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    color: rgb(57, 31, 164);
+}
