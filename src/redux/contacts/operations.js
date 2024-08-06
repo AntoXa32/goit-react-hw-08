@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-axios.defaults.baseURL = "https://66a091c67053166bcabbdaf4.mockapi.io";
+import toast from "react-hot-toast";
 
 export const fetchContacts = createAsyncThunk(
   "contacts/fetchAll",
@@ -10,6 +9,7 @@ export const fetchContacts = createAsyncThunk(
       const response = await axios.get("/contacts");
       return response.data;
     } catch (error) {
+      toast.error("Could not load contacts");
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -20,8 +20,10 @@ export const addContact = createAsyncThunk(
   async (newContact, thunkAPI) => {
     try {
       const response = await axios.post("/contacts", newContact);
+      toast.success("Contact successfully added");
       return response.data;
     } catch (error) {
+      toast.error("Could not load contacts");
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -32,8 +34,24 @@ export const deleteContact = createAsyncThunk(
   async (contactId, thunkAPI) => {
     try {
       const response = await axios.delete(`/contacts/${contactId}`);
+      toast.success("Contact successfully added");
       return response.data;
     } catch (error) {
+      toast.error("Could not load contacts");
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateContact = createAsyncThunk(
+  "contacts/updateContact",
+  async ({ id, updatedContact }, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/contacts/${id}`, updatedContact);
+      toast.success("Contact successfully added");
+      return response.data;
+    } catch (error) {
+      toast.error("Could not load contacts");
       return thunkAPI.rejectWithValue(error.message);
     }
   }

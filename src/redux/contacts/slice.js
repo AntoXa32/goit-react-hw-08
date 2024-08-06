@@ -1,8 +1,13 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { fetchContacts } from "./contactsOps";
-import { addContact } from "./contactsOps";
-import { deleteContact } from "./contactsOps";
-import { selectFilterName } from "./filtersSlice";
+import {
+  fetchContacts,
+  addContact,
+  deleteContact,
+  updateContact,
+} from "../contacts/operations";
+import { selectFilterName } from "../filters/selectors";
+import { selectContacts } from "./selectors";
+import { logOut } from "../auth/operations";
 
 const contactsSlice = createSlice({
   name: "contacts",
@@ -50,21 +55,37 @@ const contactsSlice = createSlice({
       .addCase(deleteContact.rejected, (state) => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(updateContact.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(updateContact.fulfilled, (state, action) => {
+        state.items = state.items.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        );
+        state.loading = false;
+      })
+      .addCase(updateContact.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      })
+      .addCase(logOut.fulfilled, (state) => {
+        state.items = [];
+        state.error = null;
+        state.loading = false;
       });
   },
 });
 
-export const selectContacts = (state) => state.contacts.items;
-
-export const selectLoading = (state) => state.contacts.loading;
-
-export const selectError = (state) => state.contacts.error;
-
 export const selectFilteredContacts = createSelector(
   [selectContacts, selectFilterName],
   (contacts, filter) => {
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+    const lowercasedFilter = filter.toLowerCase();
+    return contacts.filter(
+      (contact) =>
+        contact.name.toLowerCase().includes(lowercasedFilter) ||
+        contact.number.includes(lowercasedFilter)
     );
   }
 );

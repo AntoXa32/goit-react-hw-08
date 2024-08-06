@@ -1,34 +1,32 @@
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contacts/operations";
+import { register } from "../../redux/auth/operations";
 import { Box, TextField, Button, Typography } from "@mui/material";
+import * as Yup from "yup";
 
-export default function ContactForm() {
+export default function RegistrationForm() {
   const dispatch = useDispatch();
 
-  const FeedbackShema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    number: Yup.string()
-      .min(3, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-  });
-
   const handleSubmit = (values, actions) => {
-    dispatch(addContact(values));
-    actions.setSubmitting(false);
+    dispatch(register(values));
     actions.resetForm();
   };
 
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Required"),
+    email: Yup.string().email("Invalid email address").required("Required"),
+    password: Yup.string().required("Required"),
+  });
+
   return (
     <Formik
-      initialValues={{ name: "", number: "" }}
+      initialValues={{
+        name: "",
+        email: "",
+        password: "",
+      }}
       onSubmit={handleSubmit}
-      validationSchema={FeedbackShema}
+      validationSchema={validationSchema}
     >
       {({ errors, touched }) => (
         <Form autoComplete="off">
@@ -46,15 +44,14 @@ export default function ContactForm() {
             }}
           >
             <Typography variant="h5" component="h1" gutterBottom>
-              Add Contact
+              Register
             </Typography>
 
             <Field name="name">
               {({ field }) => (
                 <TextField
                   {...field}
-                  label="Name"
-                  type="text"
+                  label="Username"
                   variant="outlined"
                   fullWidth
                   error={touched.name && Boolean(errors.name)}
@@ -63,22 +60,36 @@ export default function ContactForm() {
               )}
             </Field>
 
-            <Field name="number">
+            <Field name="email">
               {({ field }) => (
                 <TextField
                   {...field}
-                  label="Number"
-                  type="text"
+                  label="Email"
+                  type="email"
                   variant="outlined"
                   fullWidth
-                  error={touched.number && Boolean(errors.number)}
-                  helperText={touched.number && errors.number}
+                  error={touched.email && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
+                />
+              )}
+            </Field>
+
+            <Field name="password">
+              {({ field }) => (
+                <TextField
+                  {...field}
+                  label="Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  error={touched.password && Boolean(errors.password)}
+                  helperText={touched.password && errors.password}
                 />
               )}
             </Field>
 
             <Button type="submit" variant="contained" color="primary">
-              Add Contact
+              Register
             </Button>
           </Box>
         </Form>
